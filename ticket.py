@@ -4,12 +4,14 @@
 The logic file of ordering ticket
 ticket.py 
 """
-import  os
-import  os.path
-import  urllib
+import os
+import os.path
+import urllib
+import logging
 
-import  httplib2
+import httplib2
 
+logging.basicConfig(filename = 'log.txt', format = '%(asctime)s %(message)s', datefmt = '%Y/%m/%d %I:%M:%S', level = logging.INFO)
 http = httplib2.Http(cache= '.cache', disable_ssl_certificate_validation= True)
 
 #Global variables
@@ -46,11 +48,10 @@ def stationLoad():
         f = open('./station')
         sta_str = f.read()
     except IOError, e:
+        logging.info(u'站点信息文件打开失败')
         return (0, u'站点信息文件[station]读取失败！')
-    stalist = [x.split('|') for x in sta_str.strip().split('@')]
-    stations = [{'abbr': sta[0], 'name': sta[1], 'telecode': sta[2], 'pinyin': sta[3], 'pyabbr': sta[4]} for sta in stalist]
-    for i in  stations:
-        print i
+    stations = [x.split('|') for x in sta_str.strip().split('@')]
+    f.close()
 
 if __name__ == '__main__':
     stationLoad()
