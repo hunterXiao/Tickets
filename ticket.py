@@ -6,6 +6,7 @@ ticket.py
 """
 import os
 import os.path
+import random
 import sys
 import urllib
 import logging
@@ -51,15 +52,31 @@ def stationLoad():
     except IOError, e:
         logging.info(u'站点信息文件打开失败')
         sys.exit()
-    sta_str = f.read()
-    stations = [x.split('|') for x in sta_str.strip().split('@')]   
+    sta_str = f.read().strip().split('@')
+    items = [item.split('|') for  item in sta_str]
+    for item in items:
+        stations.append({'abbr': item[0], 'name': item[1], 'telecode': item[2], 'pinyin': item[3], 'pyabbr': item[4]})
+    f.close()
 
 
 #----------------------------------------------------------------------
+#
+#根据站点名称，拼音，拼音简写查询出站点信息
+#
 def stationQuery(query):
     """Query station infomation by pinyin,name,pinyinabbr """
     station_matched = []
-    pass
+    for station in  stations:
+        if station['name'] == query or station['pinyin'].startswith(query) == 1 or station['pyabbr'].startswith(query) == 1:
+            station_matched.append(station)
+
+
+#----------------------------------------------------------------------
+def getVerifyCode():
+    """获取验证码"""
+    url = 'https://kyfw.12306.cn/otn/passcodeNew/getPassCodeNew?module=login&rand=sjrand&%0.16f' % random.random()
+    
+
 
 if __name__ == '__main__':
     stationLoad()
