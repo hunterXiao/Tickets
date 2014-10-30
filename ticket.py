@@ -17,7 +17,7 @@ logging.basicConfig(filename = 'log.txt', format = '%(asctime)s %(message)s', da
 http = httplib2.Http(cache= '.cache', disable_ssl_certificate_validation= True)
 
 #Global variables
-stations = None
+stations = []
 
 seatTypeCodes = [
     ('1', u'硬座'), 
@@ -48,8 +48,9 @@ sys.setdefaultencoding('utf8')
 
 def stationLoad():
     try:
-        f = open('./station1')
+        f = open('./station')
     except IOError, e:
+        print u'站点信息文件打开失败'
         logging.info(u'站点信息文件打开失败')
         sys.exit()
     sta_str = f.read().strip().split('@')
@@ -75,9 +76,14 @@ def stationQuery(query):
 def getVerifyCode():
     """获取验证码"""
     url = 'https://kyfw.12306.cn/otn/passcodeNew/getPassCodeNew?module=login&rand=sjrand&%0.16f' % random.random()
-    
+    dest = './verifyCode'
+    if not os.path.isdir(dest):
+        os.mkdir(dest)
+    filename = dest + os.sep + 'verify.png'
+    urllib.urlretrieve(url, filename)
 
 
 if __name__ == '__main__':
     stationLoad()
+    getVerifyCode()
     
