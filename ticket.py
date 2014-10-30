@@ -6,6 +6,7 @@ ticket.py
 """
 import os
 import os.path
+import sys
 import urllib
 import logging
 
@@ -36,7 +37,8 @@ cardTypeCodes = [
     ('B', u'护照'), 
 ]
 
-
+reload(sys)
+sys.setdefaultencoding('utf8')
 # ------------------------------------------------------------------------------
 # 火车站点数据加载
 # 全部站点, 数据来自: https://kyfw.12306.cn/otn/resources/js/framework/station_name.js
@@ -45,13 +47,19 @@ cardTypeCodes = [
 
 def stationLoad():
     try:
-        f = open('./station')
-        sta_str = f.read()
+        f = open('./station1')
     except IOError, e:
         logging.info(u'站点信息文件打开失败')
-        return (0, u'站点信息文件[station]读取失败！')
-    stations = [x.split('|') for x in sta_str.strip().split('@')]
-    f.close()
+        sys.exit()
+    sta_str = f.read()
+    stations = [x.split('|') for x in sta_str.strip().split('@')]   
+
+
+#----------------------------------------------------------------------
+def stationQuery(query):
+    """Query station infomation by pinyin,name,pinyinabbr """
+    station_matched = []
+    pass
 
 if __name__ == '__main__':
     stationLoad()
